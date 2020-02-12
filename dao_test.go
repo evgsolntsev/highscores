@@ -11,12 +11,15 @@ import (
 
 func TestDAO(t *testing.T) {
 	scores := []Score{{
+		ID:    "1",
 		Name:  "Docker",
 		Score: 70,
 	}, {
+		ID:    "2",
 		Name:  "Docker",
 		Score: 80,
 	}, {
+		ID:    "3",
 		Name:  "Evgsol",
 		Score: 50,
 	}}
@@ -39,27 +42,27 @@ func TestDAO(t *testing.T) {
 	}
 
 	for _, test := range []testcase{{
-		q: 1,
-		expected: []Score{{Name: "Docker", Score: 80}},
+		q:        1,
+		expected: []Score{{ID:"2", Name: "Docker", Score: 80}},
 	}, {
 		q: 2,
 		expected: []Score{
-			{Name: "Docker", Score: 80},
-			{Name: "Docker", Score: 70},
+			{ID: "2", Name: "Docker", Score: 80},
+			{ID: "1", Name: "Docker", Score: 70},
 		},
 	}, {
 		q: 3,
 		expected: []Score{
-			{Name: "Docker", Score: 80},
-			{Name: "Docker", Score: 70},
-			{Name: "Evgsol", Score: 50},
+			{ID: "2", Name: "Docker", Score: 80},
+			{ID: "1", Name: "Docker", Score: 70},
+			{ID: "3", Name: "Evgsol", Score: 50},
 		},
 	}, {
 		q: 4,
 		expected: []Score{
-			{Name: "Docker", Score: 80},
-			{Name: "Docker", Score: 70},
-			{Name: "Evgsol", Score: 50},
+			{ID: "2", Name: "Docker", Score: 80},
+			{ID: "1", Name: "Docker", Score: 70},
+			{ID: "3", Name: "Evgsol", Score: 50},
 		},
 	}} {
 		realScores, err := dao.GetTop(ctx, test.q)
