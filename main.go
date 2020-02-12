@@ -43,7 +43,6 @@ func Top(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Write(response)
-
 }
 
 func Add(w http.ResponseWriter, req *http.Request) {
@@ -67,7 +66,6 @@ func Add(w http.ResponseWriter, req *http.Request) {
 				Score: claims["score"].(float64),
 			}
 			dao.Insert(context.TODO(), newScore)
-			
 		}
 	} else {
 		w.Header().Set("Content-Type", "text/plain")
@@ -106,7 +104,7 @@ func main() {
 	http.HandleFunc("/top", Top)
 	http.HandleFunc("/add", Add)
 
-	err := http.ListenAndServe(":80", nil)
+	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
