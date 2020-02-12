@@ -1,0 +1,4 @@
+{
+    "shared": "keeek",
+    "mongo": "mongodb://localhost:27017"
+}
