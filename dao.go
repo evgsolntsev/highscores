@@ -9,7 +9,7 @@ import (
 
 var (
 	DatabaseName   = "dbname"
-	CollectionName = "fighters"
+	CollectionName = "scores"
 )
 
 type DAO interface {

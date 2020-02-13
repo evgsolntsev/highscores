@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-func GenerateJWT() (string, error) {
+func GenerateJWT(id, name string, score int) (string, error) {
 	str := "keeek"
 	mySigningKey := []byte(str)
 
@@ -16,9 +17,9 @@ func GenerateJWT() (string, error) {
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	claims["_id"] = "3"
-	claims["name"] = "Evgsol"
-	claims["score"] = 20
+	claims["_id"] = id
+	claims["name"] = name
+	claims["score"] = score
 
 	tokenString, err := token.SignedString(mySigningKey)
 
@@ -30,24 +31,44 @@ func GenerateJWT() (string, error) {
 	return tokenString, nil
 }
 
-func main() {
-	validToken, err := GenerateJWT()
+func call(id, name string, score int) error {
+	validToken, err := GenerateJWT(id, name, score)
 	if err != nil {
-		fmt.Println("Failed to generate token")
-		return
+		return fmt.Errorf("Failed to generate token: %s", err)
 	}
 
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", "http://ec2-52-91-188-222.compute-1.amazonaws.com:8000/add", nil)
 	req.Header.Set("Token", validToken)
-	res, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("Error: %s", err.Error())
-	}
+	_, err = client.Do(req)
+	return err
+}
 
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func RandStringRunes(n int) string {
+    b := make([]rune, n)
+    for i := range b {
+        b[i] = letterRunes[rand.Intn(len(letterRunes))]
+    }
+    return string(b)
+}
+
+func randStr() string {
+	return RandStringRunes(10)
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	type score struct {
+		name  string
+		score int
 	}
-	fmt.Printf(string(body))
+	for i := 0; i < 10; i++ {
+		err := call(randStr(), fmt.Sprintf("Docker%d", i), i * 10 + 30)
+		if err != nil {
+			fmt.Printf("Error: %s", err.Error())
+		}
+	}
 }
